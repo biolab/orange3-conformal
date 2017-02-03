@@ -16,7 +16,7 @@ Structure:
 from copy import deepcopy
 
 import numpy as np
-from sklearn.cross_validation import KFold
+from sklearn.model_selection import KFold
 
 from Orange.data import Table, Instance
 
@@ -310,7 +310,7 @@ class CrossClassifier(InductiveClassifier):
         self.calibrate = train
         self.nc_measure.fit(train)
         self.alpha = np.array([])
-        for train_index, calibrate_index in KFold(len(train), self.k, shuffle=True):
+        for train_index, calibrate_index in KFold(self.k, shuffle=True).split(train):
             icp = InductiveClassifier(deepcopy(self.nc_measure_base), train[train_index], train[calibrate_index])
             self.alpha = np.concatenate((self.alpha, icp.alpha))
 

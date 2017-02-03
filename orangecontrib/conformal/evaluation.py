@@ -21,7 +21,7 @@ Structure:
 
 import numpy as np
 import time
-from sklearn.cross_validation import KFold
+from sklearn.model_selection import KFold
 
 from Orange.classification import LogisticRegressionLearner
 from Orange.data import Table
@@ -113,7 +113,7 @@ class CrossSampler(Sampler):
         sampling procedure.
         """
         if self.kf is None:
-            self.kf = iter(KFold(self.n, n_folds=self.k, shuffle=True))
+            self.kf = iter(KFold(self.k, shuffle=True).split(self.data))
         try:
             train_ind, test_ind = next(self.kf)
             return self.data[train_ind], self.data[test_ind]
