@@ -17,11 +17,9 @@ Structure:
 - Evaluation methods
     - :py:func:`run`
     - :py:func:`run_train_test`
-    - :py:func:`calibration_plot`
 """
 
 import numpy as np
-import matplotlib.pyplot as plt
 import time
 from sklearn.cross_validation import KFold
 
@@ -343,39 +341,3 @@ def run_train_test(cp, eps, train, test, calibrate=None):
     finish = time.time()
     results.tm = finish-start
     return results
-
-
-def calibration_plot(cp, data, k=11, rep=1, title='calibration plot', fname='cplot.png'):
-    """Draw and save a calibration plot by evaluating the conformal predictor (`cp`)
-    with different significance values `eps` on random train/test splits.
-    Repeat the experiment `rep` times.
-
-    Examples:
-        >>> cp = CrossClassifier(InverseProbability(LogisticRegressionLearner()), 5)
-        >>> calibration_plot(cp, Table('iris'))
-    """
-    errs = []
-    lin = np.linspace(0.0, 1.0, k)
-    for eps in lin:
-        r = run(cp, eps, RandomSampler(data, 4, 1), rep)
-        print(eps, 1-r.accuracy())
-        errs.append(1 - r.accuracy())
-    plt.xlabel('significance (eps)')
-    plt.ylabel('error rate')
-    plt.title(title)
-    plt.plot(lin, errs, color='blue')
-    plt.plot([0,1], [0,1], color='black')
-    plt.tight_layout()
-    plt.savefig(fname)
-    plt.close()
-
-
-if __name__ == '__main__':
-    data = Table('auto-mpg')
-    nc_str = "AbsError(LinearRegressionLearner())"
-    cp_str = "CrossRegressor(nc, 5)"
-    nc = eval(nc_str)
-    cp = eval(cp_str)
-    calibration_plot(cp, data, rep=5,
-                     title='data = %s\nnc = %s\ncp = %s\n' % (data.name, nc_str, cp_str),
-                     fname='../plots/'+data.name+'.png')
