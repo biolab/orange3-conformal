@@ -14,12 +14,30 @@ from Orange.preprocess import Normalize
 from Orange.regression import LinearRegressionLearner, KNNRegressionLearner, SVRLearner, RandomForestRegressionLearner
 
 from orangecontrib.conformal.classification import TransductiveClassifier, InductiveClassifier, CrossClassifier, LOOClassifier
-from orangecontrib.conformal.evaluation import LOOSampler, CrossSampler, RandomSampler, run, calibration_plot, run_train_test, ResultsClass, \
+from orangecontrib.conformal.evaluation import LOOSampler, CrossSampler, RandomSampler, run, run_train_test, ResultsClass, \
     ResultsRegr
 from orangecontrib.conformal.nonconformity import InverseProbability, AbsError, KNNDistance, KNNFraction, AbsErrorKNN, ProbabilityMargin, \
     AvgErrorKNN, AbsErrorNormalized, LOORegrNC, LOOClassNC, SVMDistance, AbsErrorRF, ExperimentalNC, ErrorModelNC
 from orangecontrib.conformal.regression import InductiveRegressor, CrossRegressor, LOORegressor
-from orangecontrib.conformal.utils import get_instance, split_data, shuffle_data
+
+
+def get_instance(data, i):
+    """Extract a single instance from data as a test instance and return the remainder as a training set."""
+    train, test = None, data[i]
+    if i == 0: train = data[1:]
+    elif i == len(data)-1: train = data[:-1]
+    else: train = Table(data.domain, np.vstack((data[:i], data[i+1:])))
+    return train, test
+
+def split_data(data, a, b):
+    """"Split data in approximate ratio a:b."""
+    k = a*len(data)//(a+b)
+    return data[:k], data[k:]
+
+def shuffle_data(data):
+    """Randomly shuffle data instances."""
+    return data[np.random.permutation(len(data))]
+
 
 
 class TestTransductive(TestCase):

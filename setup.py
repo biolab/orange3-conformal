@@ -10,9 +10,12 @@ NAME = "Orange3-Conformal"
 VERSION = "1.0.0"
 
 DESCRIPTION = "Orange3 Conformal Prediction library"
-LONG_DESCRIPTION = open(path.join(path.dirname(__file__), 'README.md')).read()
-
-LICENSE = "BSD"
+# pandoc --from=markdown --to=rst README.md -o README.rst
+LONG_DESCRIPTION = open(path.join(path.dirname(__file__), 'README.rst')).read()
+AUTHOR = 'Bioinformatics Laboratory, FRI UL'
+AUTHOR_EMAIL = 'info@biolab.si'
+URL = 'https://github.com/biolab/orange3-conformal'
+LICENSE = 'GPLv3'
 
 KEYWORDS = (
     # [PyPi](https://pypi.python.org) packages with keyword "orange3 add-on"
@@ -87,6 +90,9 @@ if __name__ == '__main__':
         version=VERSION,
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
+        author=AUTHOR,
+        author_email=AUTHOR_EMAIL,
+        url=URL,
         license=LICENSE,
         packages=PACKAGES,
         package_data=PACKAGE_DATA,
