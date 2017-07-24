@@ -10,4 +10,3 @@ Library reference
    conformal.evaluation
    conformal.nonconformity
    conformal.regression
-   conformal.utils

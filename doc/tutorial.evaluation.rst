@@ -24,8 +24,3 @@ In addition to *validity*, we are often interested in the *efficiency* of a pred
     Accuracy: 0.946666666667
     >>> print('Singletons:', res.singleton_criterion())
     Singletons: 0.96
-
-Another very useful visual validation approach is to plot the dependency of the actual measured error rate at different levels of the specified significance so the user can quickly see that the error is indeed controlled by the parameter.
-There is a function in the evaluation module that prepares a calibration plot for the specified predictor and data:
-
-    >>> cp.evaluation.calibration_plot(ccp, iris, fname='calibration.png')
