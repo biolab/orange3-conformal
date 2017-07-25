@@ -41,7 +41,7 @@ class TestClassification(TestCase):
         self.assertListEqual(predictor(self.inst.x, 0.1), ['Iris-setosa'])
 
     def test_Mahalanobis(self):
-        nc = cp.nonconformity.KNNDistance(Orange.distance.Mahalanobis, 5)
+        nc = cp.nonconformity.KNNDistance(Orange.distance.MahalanobisDistance(), 5)
         predictor = cp.classification.InductiveClassifier(nc, self.train, self.calibrate)
         self.assertListEqual(predictor(self.inst.x, 0.1), ['Iris-setosa'])
 
