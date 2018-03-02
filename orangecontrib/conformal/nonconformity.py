@@ -22,8 +22,9 @@ from copy import deepcopy
 import numpy as np
 
 from Orange.base import Model
-
 from Orange.data import Table, Instance
+from Orange.distance import DistanceModel
+
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import SVC, LinearSVC, NuSVC
 
@@ -170,10 +171,8 @@ class NearestNeighbours:
         """Store the data for finding nearest neighbours."""
         self.data = data
         # fit the distance measure if uninitialized
-        try:
-            self.distance(data[0], data[0])
-        except AssertionError:
-            self.distance.fit(data)
+        if not isinstance(self.distance, DistanceModel):
+            self.distance = self.distance.fit(data)
 
     def neighbours(self, instance):
         """Compute distances to all other data instances using the distance measure (:py:attr:`distance`).
@@ -183,8 +182,8 @@ class NearestNeighbours:
         Returns:
             List of pairs (distance, instance) in increasing order of distances.
         """
-        other = [row for row in self.data if not np.array_equal(row.x, instance.x)]
-        dist = self.distance(instance, np.array([row.x for row in other]))[0]
+        other = self.data[np.array([not np.array_equal(row.x, instance.x) for row in self.data])]
+        dist = self.distance(instance, other)[0]
         return sorted([(d, row) for d, row in zip(dist, other)], key=lambda x: x[0])
 
 

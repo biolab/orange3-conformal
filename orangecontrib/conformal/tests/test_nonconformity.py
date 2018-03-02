@@ -32,20 +32,20 @@ class TestClassification(TestCase):
         self.assertListEqual(predictor(inst.x, 0.1), ['no'])
 
     def test_Neighbours(self):
-        nc = cp.nonconformity.KNNDistance(Orange.distance.Euclidean, 10)
+        nc = cp.nonconformity.KNNDistance(Orange.distance.Euclidean(), 10)
         predictor = cp.classification.InductiveClassifier(nc, self.train, self.calibrate)
         self.assertListEqual(predictor(self.inst.x, 0.1), ['Iris-setosa'])
 
-        nc = cp.nonconformity.KNNFraction(Orange.distance.Euclidean, 10, weighted=True)
+        nc = cp.nonconformity.KNNFraction(Orange.distance.Euclidean(), 10, weighted=True)
         predictor = cp.classification.InductiveClassifier(nc, self.train, self.calibrate)
         self.assertListEqual(predictor(self.inst.x, 0.1), ['Iris-setosa'])
 
     def test_Mahalanobis(self):
-        nc = cp.nonconformity.KNNDistance(Orange.distance.MahalanobisDistance(), 5)
+        nc = cp.nonconformity.KNNDistance(Orange.distance.Mahalanobis(), 5)
         predictor = cp.classification.InductiveClassifier(nc, self.train, self.calibrate)
         self.assertListEqual(predictor(self.inst.x, 0.1), ['Iris-setosa'])
 
-        Mah = Orange.distance.MahalanobisDistance(self.train)
+        Mah = Orange.distance.Mahalanobis().fit(self.train)
         nc = cp.nonconformity.KNNDistance(Mah, 5)
         predictor = cp.classification.InductiveClassifier(nc, self.train, self.calibrate)
         self.assertListEqual(predictor(self.inst.x, 0.1), ['Iris-setosa'])
@@ -64,7 +64,7 @@ class TestRegression(TestCase):
         self.assertTrue(lo <= float(self.inst.y) <= hi)
 
         nc = cp.nonconformity.AbsErrorNormalized(Orange.regression.LinearRegressionLearner(),
-                                                 Orange.distance.Euclidean, 10)
+                                                 Orange.distance.Euclidean(), 10)
         predictor = cp.regression.InductiveRegressor(nc, self.train, self.calibrate)
         lo, hi = predictor(self.inst.x, 0.1)
         self.assertTrue(lo <= float(self.inst.y) <= hi)
@@ -84,12 +84,12 @@ class TestRegression(TestCase):
         self.assertTrue(lo <= float(self.inst.y) <= hi)
 
     def test_Neighbours(self):
-        nc = cp.nonconformity.AbsErrorKNN(Orange.distance.Euclidean, 10)
+        nc = cp.nonconformity.AbsErrorKNN(Orange.distance.Euclidean(), 10)
         predictor = cp.regression.InductiveRegressor(nc, self.train, self.calibrate)
         lo, hi = predictor(self.inst.x, 0.1)
         self.assertTrue(lo <= float(self.inst.y) <= hi)
 
-        nc = cp.nonconformity.AvgErrorKNN(Orange.distance.Euclidean, 10)
+        nc = cp.nonconformity.AvgErrorKNN(Orange.distance.Euclidean(), 10)
         predictor = cp.regression.InductiveRegressor(nc, self.train, self.calibrate)
         lo, hi = predictor(self.inst.x, 0.1)
         self.assertTrue(lo <= float(self.inst.y) <= hi)

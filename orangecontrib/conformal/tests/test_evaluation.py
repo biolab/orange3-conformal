@@ -103,7 +103,7 @@ class TestEvaluation(TestCase):
 
     def test_results_regr(self):
         tab = Orange.data.Table('housing')[:300]
-        nc = cp.nonconformity.AbsErrorKNN(Orange.distance.Euclidean, 10, average=True)
+        nc = cp.nonconformity.AbsErrorKNN(Orange.distance.Euclidean(), 10, average=True)
         pred = cp.regression.InductiveRegressor(nc)
         train, test = next(cp.evaluation.RandomSampler(tab, 4, 1))
         r1 = cp.evaluation.run_train_test(pred, 0.1, train, test)
