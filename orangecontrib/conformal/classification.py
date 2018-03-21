@@ -36,10 +36,10 @@ class PredictionClass:
         >>> train, test = next(LOOSampler(Table('iris')))
         >>> tcp = TransductiveClassifier(InverseProbability(NaiveBayesLearner()), train)
 
-        >>> prediction = tcp.predict(test[0].x, 0.1)
+        >>> prediction = tcp.predict(test[0], 0.1)
         >>> print(prediction.confidence(), prediction.credibility())
 
-        >>> prediction = tcp.predict(test[0].x)
+        >>> prediction = tcp.predict(test[0])
         >>> print(prediction.classes(0.1), prediction.classes(0.9))
     """
 
@@ -125,7 +125,7 @@ class ConformalClassifier(ConformalPredictor):
         """Compute a classification prediction object from p-values for a given example and significance level.
 
         Args:
-            example (ndarray): Attributes array.
+            example (Instance): Orange row instance.
             eps (float): Default significance level (error rate).
 
         Returns:
@@ -138,7 +138,7 @@ class ConformalClassifier(ConformalPredictor):
         """Compute predicted classes for a given example and significance level.
 
         Args:
-            example (ndarray): Attributes array.
+            example (Instance): Orange row instance.
             eps (float): Significance level (error rate).
 
         Returns:
@@ -154,7 +154,7 @@ class TransductiveClassifier(ConformalClassifier):
     Examples:
         >>> train, test = next(LOOSampler(Table('iris')))
         >>> tcp = TransductiveClassifier(ProbabilityMargin(NaiveBayesLearner()), train)
-        >>> print(tcp(test[0].x, 0.1))
+        >>> print(tcp(test[0], 0.1))
     """
 
     def __init__(self, nc_measure, train=None, mondrian=False):
@@ -187,21 +187,23 @@ class TransductiveClassifier(ConformalClassifier):
         and compares its nonconformity against all other instances.
 
         Args:
-            example (ndarray): Attributes array.
+            example (Instance): Orange row instance.
 
         Returns:
             List of pairs (p-value, class)
         """
         ps = []
+        temp = example.get_class()
         for yi, y in enumerate(self.domain.class_var.values):
-            inst = Instance(self.domain, np.concatenate((example, [yi])))
-            data = Table(self.domain, np.vstack((self.train, inst)))
+            example.set_class(yi)
+            data = Table(self.domain, np.vstack((self.train, example)))
             self.nc_measure.fit(data)
             scores = np.array([self.nc_measure.nonconformity(row) for row in data
                                if not self.mondrian or self.mondrian and row.get_class() == y])
             alpha, alpha_n = scores[:-1], scores[-1]
             p_y = sum(scores >= alpha_n) / len(scores)
             ps.append((p_y, y))
+        example.set_class(temp)
         return ps
 
 
@@ -215,7 +217,7 @@ class InductiveClassifier(ConformalClassifier):
         >>> train, test = next(LOOSampler(Table('iris')))
         >>> train, calibrate = next(RandomSampler(train, 2, 1))
         >>> icp = InductiveClassifier(InverseProbability(LogisticRegressionLearner()), train, calibrate)
-        >>> print(icp(test[0].x, 0.1))
+        >>> print(icp(test[0], 0.1))
     """
 
     def __init__(self, nc_measure, train=None, calibrate=None, mondrian=False):
@@ -253,22 +255,24 @@ class InductiveClassifier(ConformalClassifier):
         against all other instances in the calibration set.
 
         Args:
-            example (ndarray): Attributes array.
+            example (Instance): Orange row instance.
 
         Returns:
             List of pairs (p-value, class)
         """
         classes = []
         ps = []
+        temp = example.get_class()
         for yi, y in enumerate(self.domain.class_var.values):
-            inst = Instance(self.domain, np.concatenate((example, [yi])))
-            alpha_n = self.nc_measure.nonconformity(inst)
+            example.set_class(yi)
+            alpha_n = self.nc_measure.nonconformity(example)
             if self.mondrian:
                 alpha = np.array([a for a, cal in zip(self.alpha, self.calibrate) if cal.get_class() == y])
             else:
                 alpha = self.alpha
             p_y = (sum(alpha >= alpha_n)+1) / (len(alpha)+1)
             ps.append((p_y, y))
+        example.set_class(temp)
         return ps
 
 
@@ -278,7 +282,7 @@ class CrossClassifier(InductiveClassifier):
     Examples:
         >>> train, test = next(LOOSampler(Table('iris')))
         >>> ccp = CrossClassifier(InverseProbability(LogisticRegressionLearner()), 3, train)
-        >>> print(ccp(test[0].x, 0.1))
+        >>> print(ccp(test[0], 0.1))
     """
 
     def __init__(self, nc_measure, k, train=None, mondrian=False):
@@ -322,7 +326,7 @@ class LOOClassifier(CrossClassifier):
     Examples:
         >>> train, test = next(LOOSampler(Table('iris')))
         >>> loocp = LOOClassifier(InverseProbability(LogisticRegressionLearner()), train)
-        >>> print(loocp(test[0].x, 0.1))
+        >>> print(loocp(test[0], 0.1))
     """
 
     def __init__(self, nc_measure, train=None, mondrian=False):

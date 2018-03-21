@@ -337,7 +337,7 @@ def run_train_test(cp, eps, train, test, calibrate=None):
             train, calibrate = next(RandomSampler(train, 2, 1))
         cp.fit(train, calibrate)
     for inst in test:
-        results.add(cp.predict(inst.x, eps), inst.get_class())
+        results.add(cp.predict(inst, eps), inst.get_class())
     finish = time.time()
     results.tm = finish-start
     return results

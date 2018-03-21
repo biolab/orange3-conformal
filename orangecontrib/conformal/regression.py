@@ -34,7 +34,7 @@ class PredictionRegr:
     Examples:
         >>> train, test = next(LOOSampler(Table('housing')))
         >>> ccr = CrossRegressor(AbsError(LinearRegressionLearner()), 5, train)
-        >>> prediction = ccr.predict(test[0].x, 0.1)
+        >>> prediction = ccr.predict(test[0], 0.1)
         >>> print(prediction.width())
     """
 
@@ -89,7 +89,7 @@ class ConformalRegressor(ConformalPredictor):
         :py:func:`cp.nonconformity.RegrNC.predict` function.
 
         Args:
-            example (ndarray): Attributes array.
+            example (Instance): Orange row instance.
             eps (float): Default significance level (error rate).
 
         Returns:
@@ -98,15 +98,14 @@ class ConformalRegressor(ConformalPredictor):
         s = int(eps*(len(self.alpha)+1)) - 1
         s = min(max(s, 0), len(self.alpha)-1)
         nc = self.alpha[s]
-        inst = Instance(self.domain, np.concatenate((example, [Unknown])))
-        lo, hi = self.nc_measure.predict(inst, nc)
+        lo, hi = self.nc_measure.predict(example, nc)
         return PredictionRegr(lo, hi)
 
     def __call__(self, example, eps):
         """Compute predicted range for a given example and significance level.
 
         Args:
-            example (ndarray): Attributes array.
+            example (Instance): Orange row instance.
             eps (float): Significance level (error rate).
 
         Returns:
@@ -133,7 +132,7 @@ class InductiveRegressor(ConformalRegressor):
         >>> train, test = next(LOOSampler(Table('housing')))
         >>> train, calibrate = next(RandomSampler(train, 2, 1))
         >>> icr = InductiveRegressor(AbsError(LinearRegressionLearner()), train, calibrate)
-        >>> print(icr(test[0].x, 0.1))
+        >>> print(icr(test[0], 0.1))
     """
 
     def __init__(self, nc_measure, train=None, calibrate=None):
@@ -170,7 +169,7 @@ class CrossRegressor(InductiveRegressor):
     Examples:
         >>> train, test = next(LOOSampler(Table('housing')))
         >>> ccr = CrossRegressor(AbsError(LinearRegressionLearner()), 4, train)
-        >>> print(ccr(test[0].x, 0.1))
+        >>> print(ccr(test[0], 0.1))
     """
 
     def __init__(self, nc_measure, k, train=None):
@@ -213,7 +212,7 @@ class LOORegressor(CrossRegressor):
     Examples:
         >>> train, test = next(LOOSampler(Table('housing')))
         >>> ccr = LOORegressor(AbsError(LinearRegressionLearner()), train)
-        >>> print(ccr(test[0].x, 0.1))
+        >>> print(ccr(test[0], 0.1))
     """
 
     def __init__(self, nc_measure, train=None):

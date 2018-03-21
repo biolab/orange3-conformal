@@ -121,11 +121,11 @@ class TestEvaluation(TestCase):
         nc = cp.nonconformity.InverseProbability(Orange.classification.NaiveBayesLearner())
         ic = cp.classification.InductiveClassifier(nc)
         ic.fit(train, cal)
-        pred1 = ic(test[0].x, 0.1)
+        pred1 = ic(test[0], 0.1)
         with open('temp.cp','wb') as f:
             pickle.dump(ic, f)
         with open('temp.cp','rb') as f:
             ic2 = pickle.load(f)
         os.remove('temp.cp')
-        pred2 = ic2(test[0].x, 0.1)
+        pred2 = ic2(test[0], 0.1)
         self.assertListEqual(pred1, pred2)
