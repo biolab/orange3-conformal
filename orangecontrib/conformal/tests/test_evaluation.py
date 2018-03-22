@@ -101,6 +101,13 @@ class TestEvaluation(TestCase):
         self.assertGreater(r.confidence(), 0.9)
         self.assertGreater(r.credibility(), 0.4)
 
+        self.assertAlmostEqual(sum(r.accuracy(class_value=c) for c in tab.domain.class_var.values)/3,
+                               r.accuracy(),
+                               delta=1e-2)
+
+        self.assertGreater(r.accuracy(eps=0.01), r.accuracy())
+        self.assertGreater(r.accuracy(), r.accuracy(eps=0.2))
+
     def test_results_regr(self):
         tab = Orange.data.Table('housing')[:300]
         nc = cp.nonconformity.AbsErrorKNN(Orange.distance.Euclidean(), 10, average=True)

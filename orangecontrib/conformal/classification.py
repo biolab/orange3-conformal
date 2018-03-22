@@ -67,17 +67,18 @@ class PredictionClass:
             assert(eps is not None)
         return [y for p_y, y in self.p if p_y > eps]
 
-    def verdict(self, ref):
+    def verdict(self, ref, eps=None):
         """Conformal classification prediction is correct when the actual class appears
         among the predicted classes.
 
         Args:
             ref: Reference/actual class
+            eps (float): Significance level (error rate).
 
         Returns:
-            True if the prediction with default `eps` is correct.
+            True if the prediction with default or specified `eps` is correct.
         """
-        return ref in self.classes()
+        return ref in self.classes(eps)
 
     def confidence(self):
         """Confidence is an efficiency measure of a single prediction.

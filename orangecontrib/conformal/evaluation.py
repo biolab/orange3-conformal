@@ -181,14 +181,11 @@ class ResultsClass(Results):
         >>> print(r.singleton_criterion())
     """
 
-    def accuracy(self, class_value=None):
+    def accuracy(self, class_value=None, eps=None):
         """Compute accuracy for test instances with a given class value. If this parameter is not given,
         compute accuracy over all instances, regardless of their class."""
-        if class_value is None:
-            return super().accuracy()
-        else:
-            v = [p.verdict(r) for p, r in zip(self.preds, self.refs) if r == class_value]
-            return np.mean(v)
+        v = [p.verdict(r, eps) for p, r in zip(self.preds, self.refs) if class_value is None or r == class_value]
+        return np.mean(v)
 
     def confidence(self):
         """Average confidence of predictions."""
