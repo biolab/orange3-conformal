@@ -80,6 +80,9 @@ class ConformalRegressor(ConformalPredictor):
         assert isinstance(nc_measure, RegrNC), "Inappropriate nonconformity measure for regression"
         self.nc_measure = nc_measure
 
+    def __str__(self):
+        return "{} ({})".format(self.__class__.__name__, self.nc_measure)
+
     def predict(self, example, eps):
         """Compute a regression prediction object for a given example and significance level.
 

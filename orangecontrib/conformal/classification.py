@@ -113,6 +113,9 @@ class ConformalClassifier(ConformalPredictor):
         self.nc_measure = nc_measure
         self.mondrian = mondrian
 
+    def __str__(self):
+        return "{} ({})".format(self.__class__.__name__, self.nc_measure)
+
     def p_values(self, example):
         """Extending classes should implement this method to return a list of pairs (p-value, class)
         for a given example.

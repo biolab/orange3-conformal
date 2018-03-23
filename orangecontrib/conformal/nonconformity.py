@@ -37,6 +37,9 @@ class ClassNC:
     Extending classes should implement :py:func:`fit` and :py:func:`nonconformity` methods.
     """
 
+    def __str__(self):
+        return self.__class__.__name__
+
     def fit(self, data):
         """Process the data used for later calculation of nonconformities.
 
@@ -67,6 +70,9 @@ class ClassModelNC(ClassNC):
         self.learner = classifier
         self.model = None
 
+    def __str__(self):
+        return str(self.learner)
+
     def fit(self, data):
         """Train the underlying classifier on provided data and store the trained model."""
         self.model = self.learner(data)
@@ -81,6 +87,9 @@ class InverseProbability(ClassModelNC):
         >>> tp = TransductiveClassifier(InverseProbability(NaiveBayesLearner()), train)
         >>> print(tp(test[0].x, 0.1))
     """
+
+    def __str__(self):
+        return "InverseProbability ({})".format(super().__str__())
 
     def nonconformity(self, instance):
         predictions = self.model(instance, ret=Model.Probs)[0]
@@ -97,6 +106,9 @@ class ProbabilityMargin(ClassModelNC):
         >>> tp = TransductiveClassifier(ProbabilityMargin(LogisticRegressionLearner()), train)
         >>> print(tp(test[0].x, 0.1))
     """
+
+    def __str__(self):
+        return "ProbabilityMargin ({})".format(super().__str__())
 
     def nonconformity(self, instance):
         predictions = self.model(instance, ret=Model.Probs)[0]
@@ -137,6 +149,9 @@ class SVMDistance(ClassNC):
             "Classifier must be a sklearn's SVM classifier (SVC, LinearSVC, NuSVC)."
         self.clf = classifier
         self.model = None
+
+    def __str__(self):
+        return "SVMDistance ({})".format(self.clf.__class__.__name__)
 
     def fit(self, data):
         assert len(data.domain.class_var.values) == 2, \
@@ -203,6 +218,9 @@ class KNNDistance(ClassNearestNeighboursNC):
         >>> print(cp(test[0].x, 0.1))
     """
 
+    def __str__(self):
+        return "KNNDistance (k={})".format(self.k)
+
     def nonconformity(self, instance):
         dist = self.neighbours(instance)
         same = [d for d, row in dist if row.get_class() == instance.get_class()]
@@ -227,6 +245,9 @@ class KNNFraction(ClassNearestNeighboursNC):
     def __init__(self, distance, k=1, weighted=False):
         super().__init__(distance, k)
         self.weighted = weighted
+
+    def __str__(self):
+        return "KNNFraction (k={})".format(self.k)
 
     def nonconformity(self, instance):
         dist = self.neighbours(instance)[:self.k]
@@ -329,6 +350,9 @@ class RegrNC:
     Extending classes should implement :py:func:`fit`, :py:func:`nonconformity` and :py:func:`predict` methods.
     """
 
+    def __str__(self):
+        return self.__class__.__name__
+
     def fit(self, data):
         """Process the data used for later calculation of nonconformities.
 
@@ -364,6 +388,9 @@ class RegrModelNC(RegrNC):
         self.learner = classifier
         self.model = None
 
+    def __str__(self):
+        return str(self.learner)
+
     def fit(self, data):
         """Train the underlying classifier on provided data and store the trained model."""
         self.model = self.learner(data)
@@ -382,6 +409,9 @@ class AbsError(RegrModelNC):
         >>> cr = CrossRegressor(AbsError(LinearRegressionLearner()), 2, train)
         >>> print(cr(test[0].x, 0.1))
     """
+
+    def __str__(self):
+        return "AbsError ({})".format(super().__str__())
 
     def nonconformity(self, instance):
         return abs(instance.get_class() - float(self.model(instance)))
@@ -413,6 +443,9 @@ class AbsErrorRF(RegrModelNC):
         self.learner, self.model = classifier, None
         self.rf = rf
         self.beta = beta
+
+    def __str__(self):
+        return "AbsErrorRF ({})".format(super().__str__())
 
     def fit(self, data):
         """Train the underlying classifier on provided data and store the trained model."""
@@ -464,6 +497,9 @@ class ErrorModelNC(RegrModelNC):
         self.error_model = None
         self.beta = beta
         self.loo = loo
+
+    def __str__(self):
+        return "ErrorModelNC ({}, {})".format(self.learner, self.error_learner)
 
     def fit(self, data):
         if self.loo:
@@ -557,6 +593,9 @@ class AbsErrorNormalized(RegrModelNC, NearestNeighbours):
         if self.rf:
             assert isinstance(rf, RandomForestRegressor), \
                 "Rf must be an instance of sklearn's RandomForestRegressor."
+
+    def __str__(self):
+        return "AbsErrorNormalized ({}, k={})".format(self.learner, self.k)
 
     def fit(self, data):
         """Train the underlying model and precompute medians for nonconformity scores."""
@@ -735,6 +774,9 @@ class AbsErrorKNN(RegrNearestNeighboursNC):
         self.average = average
         self.variance = variance
 
+    def __str__(self):
+        return "AbsErrorKNN (k={})".format(self.k)
+
     def stats(self, instance):
         """Computes mean and standard deviation of values within the k nearest neighbours."""
         dist = self.neighbours(instance)
@@ -775,6 +817,9 @@ class AvgErrorKNN(RegrNearestNeighboursNC):
         >>> cr = CrossRegressor(AvgErrorKNN(Euclidean, 10), 2, train)
         >>> print(cr(test[0].x, 0.1))
     """
+
+    def __str__(self):
+        return "AvgErrorKNN (k={})".format(self.k)
 
     def avg_abs(self, y, ys):
         return np.mean([abs(y-yi) for yi in ys])

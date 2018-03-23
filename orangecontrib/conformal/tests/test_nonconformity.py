@@ -50,6 +50,21 @@ class TestClassification(TestCase):
         predictor = cp.classification.InductiveClassifier(nc, self.train, self.calibrate)
         self.assertListEqual(predictor(self.inst, 0.1), ['Iris-setosa'])
 
+    def test_str(self):
+        self.assertIn("InverseProbability",
+                      str(cp.nonconformity.InverseProbability(Orange.classification.LogisticRegressionLearner())))
+        self.assertIn("ProbabilityMargin",
+                      str(cp.nonconformity.ProbabilityMargin(Orange.classification.LogisticRegressionLearner())))
+        self.assertIn("SVMDistance",
+                      str(cp.nonconformity.SVMDistance(sklearn.svm.SVC())))
+        self.assertIn("KNNDistance",
+                      str(cp.nonconformity.KNNDistance(Orange.distance.Euclidean(), 10)))
+        self.assertIn("KNNFraction",
+                      str(cp.nonconformity.KNNFraction(Orange.distance.Euclidean(), 10)))
+        self.assertIn("LOOClassNC",
+                      str(cp.nonconformity.LOOClassNC(Orange.classification.LogisticRegressionLearner(),
+                                                      Orange.distance.Euclidean(), 10)))
+
 
 class TestRegression(TestCase):
     def setUp(self):
@@ -93,3 +108,23 @@ class TestRegression(TestCase):
         predictor = cp.regression.InductiveRegressor(nc, self.train, self.calibrate)
         lo, hi = predictor(self.inst, 0.1)
         self.assertTrue(lo <= float(self.inst.y) <= hi)
+
+    def test_str(self):
+        self.assertIn("AbsError",
+                      str(cp.nonconformity.AbsError(Orange.regression.LinearRegressionLearner())))
+        self.assertIn("AbsErrorRF",
+                      str(cp.nonconformity.AbsErrorRF(Orange.regression.LinearRegressionLearner(),
+                                                      sklearn.ensemble.RandomForestRegressor())))
+        self.assertIn("ErrorModelNC",
+                      str(cp.nonconformity.ErrorModelNC(Orange.regression.SVRLearner(),
+                                                        Orange.regression.LinearRegressionLearner())))
+        self.assertIn("AbsErrorNormalized",
+                      str(cp.nonconformity.AbsErrorNormalized(Orange.regression.LinearRegressionLearner(),
+                                                              Orange.distance.Euclidean(), 10)))
+        self.assertIn("LOORegrNC",
+                      str(cp.nonconformity.LOORegrNC(Orange.regression.LinearRegressionLearner(),
+                                                     Orange.distance.Euclidean(), 10)))
+        self.assertIn("AbsErrorKNN",
+                      str(cp.nonconformity.AbsErrorKNN(Orange.distance.Euclidean(), 10)))
+        self.assertIn("AvgErrorKNN",
+                      str(cp.nonconformity.AvgErrorKNN(Orange.distance.Euclidean(), 10)))

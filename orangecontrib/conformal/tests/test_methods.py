@@ -39,6 +39,13 @@ class TestClassification(TestCase):
         cp.classification.CrossClassifier(nc_class, 5)
         self.assertRaises(AssertionError, cp.classification.CrossClassifier, nc_regr, 5)
 
+    def test_str(self):
+        nc = cp.nonconformity.InverseProbability(Orange.classification.NaiveBayesLearner())
+        predictor = cp.classification.InductiveClassifier(nc)
+        s = str(predictor)
+        self.assertIn("InductiveClassifier", s)
+        self.assertIn("InverseProbability", s)
+
 
 class TestRegression(TestCase):
     def setUp(self):
@@ -70,6 +77,13 @@ class TestRegression(TestCase):
         self.assertRaises(AssertionError, cp.regression.InductiveRegressor, nc_class)
         cp.regression.CrossRegressor(nc_regr, 5)
         self.assertRaises(AssertionError, cp.regression.CrossRegressor, nc_class, 5)
+
+    def test_str(self):
+        nc = cp.nonconformity.AbsError(Orange.regression.LinearRegressionLearner())
+        predictor = cp.regression.InductiveRegressor(nc)
+        s = str(predictor)
+        self.assertIn("InductiveRegressor", s)
+        self.assertIn("AbsError", s)
 
 
 class TestMondrian(TestCase):
