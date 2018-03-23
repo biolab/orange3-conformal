@@ -23,7 +23,7 @@ import numpy as np
 
 from Orange.base import Model
 from Orange.data import Table, Instance
-from Orange.distance import DistanceModel
+from Orange.distance import DistanceModel, Euclidean
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import SVC, LinearSVC, NuSVC
@@ -177,7 +177,7 @@ class NearestNeighbours:
         k (int):  Number of nearest neighbours.
     """
 
-    def __init__(self, distance, k=1):
+    def __init__(self, distance=Euclidean(), k=1):
         """Store the distance measure and the number of neighbours."""
         self.distance = distance
         self.k = k
@@ -242,7 +242,7 @@ class KNNFraction(ClassNearestNeighboursNC):
         >>> print(cp(test[0].x, 0.1))
     """
 
-    def __init__(self, distance, k=1, weighted=False):
+    def __init__(self, distance=Euclidean(), k=1, weighted=False):
         super().__init__(distance, k)
         self.weighted = weighted
 
@@ -283,7 +283,7 @@ class LOOClassNC(NearestNeighbours, ClassNC):
     :math:`z^*` if the :py:attr:`neighbourhood` parameter is '*fixed*' and :math:`z_i` if it's '*variable*'.
     """
 
-    def __init__(self, classifier, distance, k, relative=True, include=False, neighbourhood='fixed'):
+    def __init__(self, classifier, distance=Euclidean(), k=10, relative=True, include=False, neighbourhood='fixed'):
         """Initialize the parameters."""
         super().__init__(distance, k)
         self.classifier = classifier
@@ -582,7 +582,7 @@ class AbsErrorNormalized(RegrModelNC, NearestNeighbours):
     of predictions instead of the nearest neighbours.
     """
 
-    def __init__(self, classifier, distance, k, gamma=0.5, rho=0.5, exp=True, rf=None):
+    def __init__(self, classifier, distance=Euclidean(), k=10, gamma=0.5, rho=0.5, exp=True, rf=None):
         """Initialize the parameters."""
         RegrModelNC.__init__(self, classifier)
         NearestNeighbours.__init__(self, distance, k)
@@ -668,7 +668,7 @@ class LOORegrNC(NearestNeighbours, RegrNC):
     :math:`z^*` if the :py:attr:`neighbourhood` parameter is '*fixed*' and :math:`z_i` if it's '*variable*'.
     """
 
-    def __init__(self, classifier, distance, k, relative=True, include=False, neighbourhood='fixed'):
+    def __init__(self, classifier, distance=Euclidean(), k=10, relative=True, include=False, neighbourhood='fixed'):
         """Initialize the parameters."""
         super().__init__(distance, k)
         self.classifier = classifier
@@ -767,7 +767,7 @@ class AbsErrorKNN(RegrNearestNeighboursNC):
         >>> print(cr(test[0].x, 0.1))
     """
 
-    def __init__(self, distance, k, average=False, variance=False):
+    def __init__(self, distance=Euclidean(), k=10, average=False, variance=False):
         """Initialize the distance measure, number of nearest neighbours to consider and
         whether to normalize by average and by variance."""
         super().__init__(distance, k)

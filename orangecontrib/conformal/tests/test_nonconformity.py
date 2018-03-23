@@ -99,7 +99,8 @@ class TestRegression(TestCase):
         self.assertTrue(lo <= float(self.inst.y) <= hi)
 
     def test_Neighbours(self):
-        nc = cp.nonconformity.AbsErrorKNN(Orange.distance.Euclidean(), 10)
+        nc = cp.nonconformity.AbsErrorKNN(k=10)
+        self.assertIsInstance(nc.distance, Orange.distance.Euclidean)
         predictor = cp.regression.InductiveRegressor(nc, self.train, self.calibrate)
         lo, hi = predictor(self.inst, 0.1)
         self.assertTrue(lo <= float(self.inst.y) <= hi)
