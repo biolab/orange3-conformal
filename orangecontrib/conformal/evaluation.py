@@ -243,7 +243,7 @@ class ResultsRegr(Results):
     """Results of evaluating a conformal regressor. Provides regression specific efficiency measures.
 
     Examples:
-        >>> ir = InductiveRegressor(AbsErrorKNN(Euclidean, 10, average=True))
+        >>> ir = InductiveRegressor(AbsErrorKNN(Euclidean(), 10, average=True))
         >>> r = run(ir, 0.1, RandomSampler(Table('housing'), 2, 1))
         >>> print(r.interdecile_range())
     """

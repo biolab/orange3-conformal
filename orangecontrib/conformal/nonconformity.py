@@ -214,7 +214,7 @@ class KNNDistance(ClassNearestNeighboursNC):
     Examples:
         >>> from Orange.distance import Euclidean
         >>> train, test = next(LOOSampler(Table('iris')))
-        >>> cp = CrossClassifier(KNNDistance(Euclidean, 10), 2, train)
+        >>> cp = CrossClassifier(KNNDistance(Euclidean(), 10), 2, train)
         >>> print(cp(test[0].x, 0.1))
     """
 
@@ -238,7 +238,7 @@ class KNNFraction(ClassNearestNeighboursNC):
 
     Examples:
         >>> train, test = next(LOOSampler(Table('iris')))
-        >>> cp = CrossClassifier(KNNFraction(Euclidean, 10, weighted=True), 2, train)
+        >>> cp = CrossClassifier(KNNFraction(Euclidean(), 10, weighted=True), 2, train)
         >>> print(cp(test[0].x, 0.1))
     """
 
@@ -763,7 +763,7 @@ class AbsErrorKNN(RegrNearestNeighboursNC):
 
     Examples:
         >>> train, test = next(LOOSampler(Table('housing')))
-        >>> cr = CrossRegressor(AbsErrorKNN(Euclidean, 10, average=True), 2, train)
+        >>> cr = CrossRegressor(AbsErrorKNN(Euclidean(), 10, average=True), 2, train)
         >>> print(cr(test[0].x, 0.1))
     """
 
@@ -814,7 +814,7 @@ class AvgErrorKNN(RegrNearestNeighboursNC):
 
     Examples:
         >>> train, test = next(LOOSampler(Table('housing')))
-        >>> cr = CrossRegressor(AvgErrorKNN(Euclidean, 10), 2, train)
+        >>> cr = CrossRegressor(AvgErrorKNN(Euclidean(), 10), 2, train)
         >>> print(cr(test[0].x, 0.1))
     """
 
