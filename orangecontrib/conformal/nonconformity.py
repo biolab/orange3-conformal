@@ -85,7 +85,7 @@ class InverseProbability(ClassModelNC):
     Examples:
         >>> train, test = next(LOOSampler(Table('iris')))
         >>> tp = TransductiveClassifier(InverseProbability(NaiveBayesLearner()), train)
-        >>> print(tp(test[0].x, 0.1))
+        >>> print(tp(test[0], 0.1))
     """
 
     def __str__(self):
@@ -104,7 +104,7 @@ class ProbabilityMargin(ClassModelNC):
     Examples:
         >>> train, test = next(LOOSampler(Table('iris')))
         >>> tp = TransductiveClassifier(ProbabilityMargin(LogisticRegressionLearner()), train)
-        >>> print(tp(test[0].x, 0.1))
+        >>> print(tp(test[0], 0.1))
     """
 
     def __str__(self):
@@ -141,7 +141,7 @@ class SVMDistance(ClassNC):
         >>> train, test = next(LOOSampler(Table('titanic')))
         >>> train, calibrate = next(RandomSampler(train, 2, 1))
         >>> icp = InductiveClassifier(SVMDistance(SVC()), train, calibrate)
-        >>> print(icp(test[0].x, 0.1))
+        >>> print(icp(test[0], 0.1))
     """
 
     def __init__(self, classifier):
@@ -215,7 +215,7 @@ class KNNDistance(ClassNearestNeighboursNC):
         >>> from Orange.distance import Euclidean
         >>> train, test = next(LOOSampler(Table('iris')))
         >>> cp = CrossClassifier(KNNDistance(Euclidean(), 10), 2, train)
-        >>> print(cp(test[0].x, 0.1))
+        >>> print(cp(test[0], 0.1))
     """
 
     def __str__(self):
@@ -239,7 +239,7 @@ class KNNFraction(ClassNearestNeighboursNC):
     Examples:
         >>> train, test = next(LOOSampler(Table('iris')))
         >>> cp = CrossClassifier(KNNFraction(Euclidean(), 10, weighted=True), 2, train)
-        >>> print(cp(test[0].x, 0.1))
+        >>> print(cp(test[0], 0.1))
     """
 
     def __init__(self, distance=Euclidean(), k=1, weighted=False):
@@ -407,7 +407,7 @@ class AbsError(RegrModelNC):
     Examples:
         >>> train, test = next(LOOSampler(Table('housing')))
         >>> cr = CrossRegressor(AbsError(LinearRegressionLearner()), 2, train)
-        >>> print(cr(test[0].x, 0.1))
+        >>> print(cr(test[0], 0.1))
     """
 
     def __str__(self):
@@ -764,7 +764,7 @@ class AbsErrorKNN(RegrNearestNeighboursNC):
     Examples:
         >>> train, test = next(LOOSampler(Table('housing')))
         >>> cr = CrossRegressor(AbsErrorKNN(Euclidean(), 10, average=True), 2, train)
-        >>> print(cr(test[0].x, 0.1))
+        >>> print(cr(test[0], 0.1))
     """
 
     def __init__(self, distance=Euclidean(), k=10, average=False, variance=False):
@@ -815,7 +815,7 @@ class AvgErrorKNN(RegrNearestNeighboursNC):
     Examples:
         >>> train, test = next(LOOSampler(Table('housing')))
         >>> cr = CrossRegressor(AvgErrorKNN(Euclidean(), 10), 2, train)
-        >>> print(cr(test[0].x, 0.1))
+        >>> print(cr(test[0], 0.1))
     """
 
     def __str__(self):

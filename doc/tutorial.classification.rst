@@ -28,9 +28,9 @@ Predicting the 90% and 99% prediction regions gives the following results.
 
     >>> print('Actual class:', test_instance.get_class())
     Actual class: Iris-virginica
-    >>> print(ccp(test_instance.x, 0.1))
+    >>> print(ccp(test_instance, 0.1))
     ['Iris-virginica']
-    >>> print(ccp(test_instance.x, 0.01))
+    >>> print(ccp(test_instance, 0.01))
     ['Iris-versicolor', 'Iris-virginica']
 
 We can see that in the first case only the correct class of 'Iris-virginica'

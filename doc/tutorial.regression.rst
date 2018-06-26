@@ -27,9 +27,9 @@ Predicting the 90% and 99% prediction regions gives the following results.
 
     >>> print('Actual target value:', test_instance.get_class())
     Actual target value: 11.900
-    >>> print(ccr(test_instance.x, 0.1))
+    >>> print(ccr(test_instance, 0.1))
     (13.708550425853684, 31.417230194137165)
-    >>> print(ccr(test_instance.x, 0.01))
+    >>> print(ccr(test_instance, 0.01))
     (-0.98542733224618217, 46.111207952237031)
 
 We can see that in the first case the predicted interval was smaller, but did
