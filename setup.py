@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 NAME = "Orange3-Conformal"
 
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 
 DESCRIPTION = "Orange3 Conformal Prediction library"
 # pandoc --from=markdown --to=rst README.md -o README.rst
