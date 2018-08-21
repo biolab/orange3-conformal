@@ -729,8 +729,10 @@ class LOORegrNC(NearestNeighbours, RegrNC):
         neighbours = self.get_neighbourhood(inst)
         model = self.classifier(neighbours)
         yp = float(model(inst))
+        class_value = inst.get_class()
         inst.set_class(yp)
         error = self.error(inst, neighbours)
+        inst.set_class(class_value)
         if self.relative:
             return yp - (nc*error), yp + (nc*error)
         else:
