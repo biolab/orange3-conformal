@@ -92,7 +92,7 @@ class InverseProbability(ClassModelNC):
         return "InverseProbability ({})".format(super().__str__())
 
     def nonconformity(self, instance):
-        predictions = self.model(instance, ret=Model.Probs)[0]
+        predictions = self.model(instance, ret=Model.Probs)
         return 1 - predictions[int(instance.get_class())]
 
 
@@ -111,7 +111,7 @@ class ProbabilityMargin(ClassModelNC):
         return "ProbabilityMargin ({})".format(super().__str__())
 
     def nonconformity(self, instance):
-        predictions = self.model(instance, ret=Model.Probs)[0]
+        predictions = self.model(instance, ret=Model.Probs)
         y = int(instance.get_class())
         py = predictions[y]
         pz = max(p for z, p in enumerate(predictions) if z != y)
@@ -328,14 +328,14 @@ class LOOClassNC(NearestNeighbours, ClassNC):
                 neighbours_i.append(inst)
 
             model = self.classifier(neighbours_i)
-            sc += w * (1-model(neigh, ret=Model.Probs)[0][int(neigh.get_class())])
+            sc += w * (1-model(neigh, ret=Model.Probs)[int(neigh.get_class())])
         return float(sc / sum(ws))
 
     def nonconformity(self, inst):
         neighbours = self.get_neighbourhood(inst)
         model = self.classifier(neighbours)
         error = self.error(inst, neighbours)
-        yp = model(inst, ret=Model.Probs)[0][int(inst.get_class())]
+        yp = model(inst, ret=Model.Probs)[int(inst.get_class())]
         if self.relative:
             return (1-yp) / (1e-6 + error)
         else:
