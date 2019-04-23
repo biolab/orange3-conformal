@@ -48,7 +48,7 @@ Bayes classifier.
 Documentation
 -------------
 
-Please see doc/Orange-ConformalPrediction.pdf.
-
-Documentation in other formats can also be built using Sphinx from the
+Please see doc/Orange-ConformalPrediction.pdf. Documentation in other formats can also be built using Sphinx from the
 doc directory.
+
+Online documentation is available at `<https://orange3-conformal.readthedocs.io>`_.
